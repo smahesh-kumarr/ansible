@@ -1,0 +1,25 @@
+---
+- name: Run commands on master VM
+  hosts: dev,prod
+  tasks:
+    - name: List files in /tmp
+      ansible.builtin.command:
+        cmd: ls -l /tmp
+      register: result
+    - name: Display output
+      ansible.builtin.debug:
+        msg: "{{ result.stdout_lines }}"
+
+    - name: Create a file if it doesn't exist
+      ansible.builtin.command:
+        cmd: touch /tmp/testfile.txt
+        creates: /tmp/testfile.txt
+
+    - name: Run command in specific directory
+      ansible.builtin.command:
+        cmd: pwd
+        chdir: /var/log
+      register: pwd_result
+    - name: Show current directory
+      ansible.builtin.debug:
+        msg: "{{ pwd_result.stdout }}"

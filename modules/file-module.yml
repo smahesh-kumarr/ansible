@@ -1,0 +1,23 @@
+---
+- name: Manage file and directory
+  hosts: all
+  become: true
+  tasks:
+    - name: Create a sample file 
+      ansible.builtin.file:
+        path: /home/ubuntu/samplefile.txt
+        state: touch 
+        mode: '0644'
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Create application directory
+      ansible.builtin.file:
+        path: /home/ubuntu/myapp
+        state: directory
+        mode: '0755'
+
+    - name: Remove temporary file
+      ansible.builtin.file:
+        path: /tmp/testfile.txt
+        state: absent

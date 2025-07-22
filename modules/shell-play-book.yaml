@@ -1,0 +1,36 @@
+---
+- name: DevOps tasks with shell module
+  hosts: all
+  become: yes  # Use sudo for commands requiring elevated privileges
+  tasks:
+    - name: Check for errors in syslog
+      ansible.builtin.shell:
+        cmd: cat /var/log/syslog | grep -i error > /tmp/error.log
+        creates: /tmp/error.log
+      register: log_result
+    - name: Display error log content
+      ansible.builtin.debug:
+        msg: "{{ log_result.stdout_lines | default('No output') }}"
+
+    - name: Check disk usage
+      ansible.builtin.shell:
+        cmd: df -h | grep /dev
+      register: disk_result
+    - name: Display disk usage
+      ansible.builtin.debug:
+        msg: "{{ disk_result.stdout_lines }}"
+
+    - name: Run command in specific directory
+      ansible.builtin.shell:
+        cmd: ls -l | grep .log
+        chdir: /var/log
+      register: log_files
+    - name: Display log files
+      ansible.builtin.debug:
+        msg: "{{ log_files.stdout_lines }}"
+
+    - name: Execute a custom script
+      ansible.builtin.shell:
+        cmd: /bin/bash /tmp/myscript.sh
+        executable: /bin/bash
+        creates: /tmp/script_output.txt
