@@ -1,0 +1,8 @@
+---
+- name: Set up Nginx using Role
+  hosts: all
+  become: true
+
+  roles:
+    - nginx-role
+
