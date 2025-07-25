@@ -1,4 +1,5 @@
 galaxy_info:
+  role: nginx-role
   author: Mahesh Kumar
   description: Ansible role to install and configure Nginx 
   company: maheshawdevops
