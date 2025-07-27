@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true  
+  tasks:
+    - name: Shutdown the debian servers
+      ansible.builtin.command: /sbin/shutdown -t now
+      when: ansible_facts['os_family'] == "RedHat"
+
+
