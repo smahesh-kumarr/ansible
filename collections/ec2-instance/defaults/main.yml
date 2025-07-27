@@ -1,0 +1,3 @@
+---
+# defaults file for ec2-instance
+type: "t2.micro"

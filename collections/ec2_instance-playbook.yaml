@@ -1,0 +1,7 @@
+---
+- name: Set up Nginx using Role
+  hosts: localhost
+  connection: local
+
+  roles:
+    - ec2-instance
