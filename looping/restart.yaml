@@ -1,0 +1,20 @@
+- name: Start the EC2 instance from control machine (outside)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    aws_access_key: "{{ ec2_access_key }}"
+    aws_secret_key: "{{ ec2_secret_key }}"
+    region: "us-east-1"
+    instance_ids:
+      - i-037a855c29241c727
+
+  tasks:
+    - name: Start EC2 instance
+      amazon.aws.ec2_instance:
+        instance_ids: "{{ instance_ids }}"
+        state: running
+        region: "{{ region }}"
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
