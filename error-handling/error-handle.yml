@@ -1,0 +1,62 @@
+---
+- hosts: app
+  become: true
+  gather_facts: yes
+
+  tasks:
+
+    - name: Check if Docker is already installed
+      ansible.builtin.command: docker --version
+      register: docker_check
+      ignore_errors: yes
+
+    - name: Print Docker version output (for debug)
+      ansible.builtin.debug:
+        var: docker_check.stdout_lines
+
+    - name: Install Docker on Ubuntu
+      block:
+        - name: Install prerequisites
+          apt:
+            name:
+              - apt-transport-https
+              - ca-certificates
+              - curl
+              - gnupg
+              - lsb-release
+            state: present
+            update_cache: yes
+
+        - name: Add Docker GPG key
+          apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+        - name: Add Docker repository
+          apt_repository:
+            repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            state: present
+            filename: docker
+
+        - name: Install Docker
+          apt:
+            name: docker-ce
+            state: present
+            update_cache: yes
+      when:
+        - ansible_distribution == "Ubuntu"
+        - docker_check.failed
+
+    - name: Install Docker on Amazon Linux
+      block:
+        - name: Enable Amazon Linux Extras (only for AL2)
+          command: amazon-linux-extras enable docker
+          when: ansible_distribution_major_version == "2"
+
+        - name: Install Docker
+          yum:
+            name: docker
+            state: present
+      when:
+        - ansible_distribution == "Amazon"
+        - docker_check.failed
